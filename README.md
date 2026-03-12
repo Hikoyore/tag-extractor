@@ -1,134 +1,94 @@
 # Tag Extractor App
 
-A GUI application to extract tags from image posts on booru-style sites (Gelbooru, Danbooru, Konachan, Yande.re, Aibooru). It automatically searches for the same image on Danbooru and Gelbooru, compares images visually (via perceptual hash), and lets you choose the best tag source when multiple are found.
+![Иллюстрация к проекту](https://github.com/Hikoyore/tag-extractor-app/blob/main/preview/preview.png)
 
-## Features
-- Extracts tags from:
-  - Gelbooru
-  - Danbooru
-  - Konachan / Konachan.net
-  - Yande.re
-  - Aibooru
-- Searches for the same image on Danbooru and Gelbooru using:
-  - MD5 hash (exact match)
-  - IQDB (reverse image search)
-- Compares images visually (dhash) when MD5 differs – automatically selects Danbooru if images match.
-- If multiple sources are available, displays a dialog with preview thumbnails and tag counts for manual choice.
-- Saves tags to a text file with source URLs (includes Danbooru/Gelbooru links if selected).
-- Bilingual interface (Russian/English) – language can be switched on the fly.
-- Preview panel shows the currently selected image.
-- Merges all saved tag files into one combined file.
+Tag Extractor — это десктопное приложение на Python с графическим интерфейсом (Tkinter), предназначенное для извлечения тегов с различных booru-сайтов. Программа анализирует ссылку на пост или изображение, получает теги из первоисточника и при необходимости ищет более полные теги через Danbooru или Gelbooru, используя MD5-хеш или сервис IQDB. Результат сохраняется в текстовый файл. Также поддерживается объединение всех ранее сохранённых тегов в один файл.
 
-## Requirements
-- Python 3.6+
-- Libraries (all are standard except Pillow):
-  - `tkinter` (usually included with Python)
-  - `requests`
-  - `Pillow` (PIL)
-  - `locale`, `threading`, `re`, `glob`, `urllib`, `io`, `tempfile` (built-in)
+## Особенности
 
-Install missing libraries with pip:
+- **Мультиязычный интерфейс** (русский / английский) — автоматически определяется язык системы, можно переключить вручную.
+- **Извлечение тегов** из URL поста или изображения с booru-сайтов.
+- **Поиск по MD5** — если у изображения есть MD5, программа пытается найти соответствующий пост на Danbooru или Gelbooru.
+- **Поиск через IQDB** — если MD5 недоступен, выполняется поиск по картинке через iqdb.org.
+- **Сравнение изображений** — при обнаружении нескольких источников (например, Konachan и Danbooru) программа может визуально сравнить изображения (по хешу разницы) и предложить выбрать наиболее подходящие теги.
+- **Предпросмотр изображения** — загружает и показывает превью изображения из поста.
+- **Сохранение тегов** в текстовый файл с информацией об источнике.
+- **Объединение всех файлов тегов** в один общий файл.
+- **Удобный интерфейс** с контекстным меню, горячими клавишами (Ctrl+C, Ctrl+V) и возможностью очистки полей ввода.
+
+## Требования
+
+- Python 3.7 или выше
+- Библиотеки: `Pillow` (для работы с изображениями), `tkinter` (обычно входит в стандартную поставку Python)
+
+Установите зависимости командой:
+
 ```bash
-pip install requests Pillow
+pip install Pillow
 ```
 
-No additional libraries needed for image hashing – it’s implemented from scratch.
+## Поддерживаемые сайты
+- Danbooru (danbooru.donmai.us)
+- Gelbooru (gelbooru.com)
+- Konachan (konachan.com, konachan.net)
+- Yande.re (yande.re)
+- AIBooru (aibooru.online)
 
-How to Use
+Ссылки могут быть как на страницу поста, так и напрямую на изображение (если в URL есть MD5 или ID).
 
-1. Run the script:
-   ```bash
-   python TagExtractorApp.py
-   ```
-2. Select a save folder (where tag files will be stored).
-3. Paste a post URL from any supported site into the input field and press Enter or click "Extract tags".
-4. The program will:
-   · Fetch tags from the original site.
-   · Search Danbooru and Gelbooru by MD5 and IQDB.
-   · Compare images if needed.
-   · If multiple sources are found, a dialog with thumbnails will appear – choose the preferred one.
-5. Tags are saved as tags_<domain>_<post_id>_clean.txt in the chosen folder.
-6. Use "Merge all tags" to combine all saved tag files into all_tags_combined.txt.
+## Формат сохраняемого файла
+Пример содержимого файла `tags_danbooru_donmai_us_123456_clean.txt`:
+```
+1girl, ahoge, blush, long hair, school uniform, solo, ...
+Всего тегов: 27
 
-Language
-
-Click the language dropdown (top left) to switch between Russian and English. The interface updates immediately.
-
-Logging
-
-All actions are logged in the left panel – you can see what the program is doing at every step.
-
-Notes
-
-· For Gelbooru, tags are filtered to remove garbage (like "imageboard-") and correctly handle the "imageboard- 1girl" case.
-· For Konachan and Yande.re, the program also searches Gelbooru if Danbooru is not found.
-· Image comparison uses a custom dhash implementation with a threshold of 5 (you can adjust in the code).
-· IQDB searches may occasionally return wrong posts; the visual comparison and manual dialog help avoid mistakes.
+Source: https://danbooru.donmai.us/posts/123456
+Danbooru: https://danbooru.donmai.us/posts/123456
+```
+_________________________________________________________________________
 
 # Tag Extractor App
 
-Программа с графическим интерфейсом для извлечения тегов из постов на booru-сайтах (Gelbooru, Danbooru, Konachan, Yande.re, Aibooru). Автоматически ищет то же изображение на Danbooru и Gelbooru, сравнивает изображения визуально (через perceptual hash) и позволяет выбрать лучший источник тегов, если их несколько.
+Tag Extractor is a Python desktop application with a GUI (Tkinter) designed to extract tags from various booru sites. The program analyzes a link to a post or image, retrieves tags from the original source, and if necessary, searches for more complete tags via Danbooru or Gelbooru using the MD5 hash or the IQDB service. The result is saved to a text file. Merging all previously saved tags into a single file is also supported.
 
-## Возможности
-- Извлекает теги с:
-  - Gelbooru
-  - Danbooru
-  - Konachan / Konachan.net
-  - Yande.re
-  - Aibooru
-- Ищет то же изображение на Danbooru и Gelbooru с помощью:
-  - MD5-хеша (точное совпадение)
-  - IQDB (обратный поиск по изображению)
-- Сравнивает изображения визуально (dhash), если MD5 различаются – автоматически выбирает Danbooru при совпадении.
-- Если доступно несколько источников, показывает диалог с миниатюрами и количеством тегов для ручного выбора.
-- Сохраняет теги в текстовый файл с указанием исходных URL (если выбран Danbooru/Gelbooru, добавляет соответствующую ссылку).
-- Двуязычный интерфейс (русский/английский) – язык можно переключать на лету.
-- Панель предпросмотра показывает текущее изображение.
-- Объединяет все сохранённые файлы тегов в один общий файл.
+## Features
 
-## Требования
-- Python 3.6+
-- Библиотеки (все стандартные, кроме Pillow):
-  - `tkinter` (обычно идёт с Python)
-  - `requests`
-  - `Pillow` (PIL)
-  - `locale`, `threading`, `re`, `glob`, `urllib`, `io`, `tempfile` (встроенные)
+- **Multilingual interface** (Russian / English) — automatically detects the system language, can be switched manually.
+- **Tag extraction** from a post or image URL on booru sites.
+- **MD5 search** — if the image has an MD5, the program attempts to find the corresponding post on Danbooru or Gelbooru.
+- **IQDB search** — if MD5 is unavailable, it performs an image search via iqdb.org.
+- **Image comparison** — when multiple sources are found (e.g., Konachan and Danbooru), the program can visually compare the images (using a difference hash) and suggest the most suitable tags.
+- **Image preview** — loads and displays a preview of the image from the post.
+- **Tag saving** to a text file with source information.
+- **Merging all tag files** into one combined file.
+- **User-friendly interface** with context menus, hotkeys (Ctrl+C, Ctrl+V), and the ability to clear input fields.
 
-Установите недостающие библиотеки через pip:
+## Requirements
+
+- Python 3.7 or higher
+- Libraries: `Pillow` (for image handling), `tkinter` (usually included with Python)
+
+Install the dependencies with:
+
 ```bash
-pip install requests Pillow
+pip install Pillow
 ```
 
-Дополнительные библиотеки для хеширования не требуются – реализация сделана с нуля.
+## Supported Sites
+- Danbooru (danbooru.donmai.us)
+- Gelbooru (gelbooru.com)
+- Konachan (konachan.com, konachan.net)
+- Yande.re (yande.re)
+- AIBooru (aibooru.online)
 
-Как использовать
+Links can be either to a post page or directly to an image (if the URL contains an MD5 or ID).
 
-1. Запустите скрипт:
-   ```bash
-   python TagExtractorApp.py 
-   ```
-2. Выберите папку для сохранения (где будут храниться файлы с тегами).
-3. Вставьте URL поста с любого поддерживаемого сайта в поле ввода и нажмите Enter или кнопку «Извлечь теги».
-4. Программа:
-   · Получит теги с исходного сайта.
-   · Выполнит поиск на Danbooru и Gelbooru по MD5 и IQDB.
-   · При необходимости сравнит изображения.
-   · Если найдено несколько источников, появится диалог с миниатюрами – выберите предпочтительный.
-5. Теги сохраняются как tags_<домен>_<ID_поста>_clean.txt в выбранной папке.
-6. Используйте кнопку «Объединить все теги», чтобы объединить все сохранённые файлы в all_tags_combined.txt.
+## Saved File Format
+Example content of `tags_danbooru_donmai_us_123456_clean.txt`:
+```
+1girl, ahoge, blush, long hair, school uniform, solo, ...
+Total tags: 27
 
-Язык
-
-Нажмите выпадающий список языка (слева вверху) для переключения между русским и английским. Интерфейс обновится мгновенно.
-
-Логирование
-
-Все действия записываются в левой панели – вы всегда видите, что делает программа.
-
-Примечания
-
-· Для Gelbooru теги фильтруются, чтобы удалить мусор (например, "imageboard-") и корректно обрабатывается случай "imageboard- 1girl".
-· Для Konachan и Yande.re программа также ищет на Gelbooru, если Danbooru не найден.
-· Сравнение изображений использует собственную реализацию dhash с порогом 5 (можно изменить в коде).
-· Поиск через IQDB иногда может возвращать ошибочные посты; визуальное сравнение и ручной диалог помогают избежать ошибок.
+Source: https://danbooru.donmai.us/posts/123456
+Danbooru: https://danbooru.donmai.us/posts/123456
 ```
